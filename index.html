@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base target="_top" />
+    <title>Mystery Box High-End</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Reset dan dasar */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background:
+                radial-gradient(ellipse at center, rgba(30, 30, 30, 0.85) 0%, rgba(10, 10, 10, 1) 100%),
+                url('https://i.ibb.co/kCskv91/Desain-tanpa-judul-5.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fefefe;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        .logo-container img {
+            width: 160px;
+            max-width: 90vw;
+            filter:
+                drop-shadow(0 0 10px #ffcf00)
+                drop-shadow(0 0 20px #ffbb00);
+            transition: transform 0.35s ease;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        .logo-container img:hover {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 3.2rem;
+            color: #ffcc00;
+            text-shadow:
+                0 0 12px #ffb900,
+                0 0 18px #ffcc00,
+                0 0 30px #ffaa00;
+            margin-bottom: 30px;
+            letter-spacing: 1.5px;
+        }
+
+        #userForm {
+            max-width: 380px;
+            margin: 0 auto;
+            padding: 30px 30px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.6);
+            transition: opacity 0.5s ease;
+            user-select: none;
+        }
+
+        #userForm.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        label {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff4b8;
+            text-shadow: 0 0 6px #ffcc33;
+            letter-spacing: 0.03em;
+        }
+
+        input::placeholder {
+            color: #ccc; /* Warna placeholder */
+            opacity: 0.8;
+        }
+
+        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        input::-ms-input-placeholder { /* Microsoft Edge */
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        input::-webkit-input-placeholder { /* Modern Browsers */
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        input:-moz-placeholder { /* Firefox 4-18 */
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        input::-moz-placeholder { /* Firefox 19+ */
+            color: #ccc;
+            opacity: 0.8;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            border: 2px solid #ffbf00;
+            background-color: #1a1a1a;
+            color: #fefefe;
+            box-shadow: inset 0 0 12px #ffcc00;
+            transition: border-color 0.3s ease;
+            outline: none;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: #ffd000;
+            box-shadow: inset 0 0 18px #ffd700;
+        }
+
+        #submitBtn {
+            margin-top: 30px;
+            width: 100%;
+            padding: 16px 0;
+            font-size: 1.3rem;
+            background: linear-gradient(45deg, #ffd700, #ffae00);
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            color: #222;
+            cursor: pointer;
+            box-shadow:
+                0 0 15px #ffd700,
+                0 6px 15px rgba(255, 187, 0, 0.7);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+        }
+
+        #submitBtn:hover:enabled {
+            transform: scale(1.08);
+            box-shadow:
+                0 0 25px #fff444,
+                0 8px 22px rgba(255, 204, 0, 0.9);
+        }
+
+        #submitBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #boxContainer {
+            margin-top: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            display: none;
+            flex-direction: column;
+            gap: 25px;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            user-select: none;
+            align-items: center; /* Agar baris box berada di tengah */
+        }
+
+        #boxContainer.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .box-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            width: 100%; /* Pastikan baris memenuhi lebar container */
+            max-width: 600px; /* Batasi lebar baris box */
+        }
+
+        .mysteryBox {
+            width: 160px;
+            height: 160px;
+            background: linear-gradient(135deg, #ffd75f, #ffba00);
+            border-radius: 25px;
+            box-shadow:
+                0 8px 20px rgba(255, 190, 0, 0.8),
+                inset 0 2px 10px rgba(255, 255, 255, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 42px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            text-shadow: 0 0 10px #fff;
+            perspective: 900px;
+        }
+
+        .mysteryBox:hover {
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow:
+                0 12px 35px rgba(255, 204, 0, 0.9),
+                inset 0 3px 12px rgba(255, 255, 255, 0.6);
+        }
+
+        .mysteryBox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 15px;
+            box-shadow: 0 0 20px #ffe066;
+            animation: fadeScaleIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spinBox {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(720deg); }
+        }
+
+        @keyframes fadeScaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #result {
+            margin-top: 35px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00ffe0;
+            text-shadow:
+                0 0 15px #00fff9,
+                0 0 25px #00ccaf;
+            min-height: 50px;
+            letter-spacing: 0.05em;
+            user-select: none;
+        }
+
+        /* Media Query untuk layar kecil (smartphone) */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.4rem;
+                margin-bottom: 20px;
+                letter-spacing: 1px;
+            }
+            .logo-container img {
+                width: 120px;
+            }
+            #userForm {
+                max-width: 90vw;
+                padding: 20px;
+                border-radius: 15px;
+            }
+            label {
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+            input {
+                padding: 12px 15px;
+                font-size: 1rem;
+                border-radius: 10px;
+            }
+            #submitBtn {
+                margin-top: 20px;
+                padding: 14px 0;
+                font-size: 1.1rem;
+                border-radius: 12px;
+            }
+            #boxContainer {
+                margin-top: 30px;
+                gap: 15px;
+            }
+            .box-row {
+                gap: 15px;
+                flex-direction: column; /* Susun box ke bawah di layar kecil */
+                align-items: center;
+                max-width: 300px; /* Batasi lebar baris box di layar kecil */
+            }
+            .mysteryBox {
+                width: 120px;
+                height: 120px;
+                font-size: 32px;
+                border-radius: 20px;
+            }
+            #result {
+                font-size: 1.2rem;
+                margin-top: 25px;
+                min-height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="https://i.ibb.co/B2yWpGPN/logo-belegendbet.png" alt="Logo BeLegendBet" />
+    </div>
+
+    <h1>SELAMAT DATANG DI MYSTERY BOX 🤑</h1>
+
+    <div id="userForm">
+        <label for="userInput">Masukkan Kode Kamu:</label>
+        <input type="text" id="userInput" placeholder="Masukkan kode" autocomplete="off" autocapitalize="characters" />
+        <button id="submitBtn" onclick="submitCode()">Mulai</button>
+    </div>
+
+    <div id="boxContainer">
+        <div class="box-row">
+            <div class="mysteryBox" onclick="openBox(0)">🎁</div>
+            <div class="mysteryBox" onclick="openBox(1)">🎁</div>
+        </div>
+        <div class="box-row">
+            <div class="mysteryBox" onclick="openBox(2)">🎁</div>
+            <div class="mysteryBox" onclick="openBox(3)">🎁</div>
+        </div>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        let boxOpened = false;
+        let currentPrize = null;
+
+        const prizeImages = {
+            '10000': 'https://i.ibb.co/0Vm3RPG1/GAME-13.png',
+            '5000': 'https://i.ibb.co/0yVQZ6PK/GAME-11.png',
+            '3000': 'https://i.ibb.co/1JBYTvLZ/GAME-9.png',
+            '2000': 'https://i.ibb.co/Q7rtGBtV/GAME-12.png'
+        };
+
+        const possiblePrizes = Object.keys(prizeImages);
+
+        // Daftar kode valid dan hadiahnya
+        const validCodes = {
+            'RAHASIA': '10000', // Kode RAHASIA akan mendapatkan hadiah 10000
+            'TEST123': '5000',  // Kode TEST123 akan mendapatkan hadiah 5000
+            'COBA007': '3000',  // Kode COBA007 akan mendapatkan hadiah 3000
+            'WINNER': '2000',   // Kode WINNER akan mendapatkan hadiah 2000
+            'LUCKYDAY': '10000' // Kode LUCKYDAY akan mendapatkan hadiah 10000
+        };
+
+        function normalizePrizeKey(prize) {
+            return prize.replace(/\./g, '').trim();
+        }
+
+        function submitCode() {
+            const input = document.getElementById('userInput').value.trim().toUpperCase(); // Konversi ke uppercase untuk case-insensitive
+            if (!input) {
+                alert('Mohon masukkan kode terlebih dahulu!');
+                return;
+            }
+            if (!/^[a-zA-Z0-9]+$/.test(input)) {
+                alert('Kode hanya boleh huruf dan angka tanpa spasi!');
+                return;
+            }
+
+            const form = document.getElementById('userForm');
+            const boxContainer = document.getElementById('boxContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true; // Nonaktifkan tombol saat proses
+
+            // Simulasikan pengecekan kode (tanpa backend)
+            setTimeout(() => {
+                submitBtn.disabled = false; // Aktifkan kembali tombol
+
+                if (validCodes[input]) {
+                    // Jika kode valid, ambil hadiahnya dari daftar validCodes
+                    currentPrize = normalizePrizeKey(validCodes[input]);
+                    
+                    form.classList.add('fade-out');
+                    setTimeout(() => {
+                        form.style.display = 'none';
+                        boxContainer.style.display = 'flex';
+                        setTimeout(() => boxContainer.classList.add('visible'), 100);
+                    }, 500);
+                    document.getElementById('result').textContent = '';
+                } else {
+                    alert('Kode tidak valid!');
+                }
+            }, 1000); // Simulasi waktu loading 1 detik
+        }
+
+        function openBox(index) {
+            if (boxOpened) {
+                alert('Kamu sudah membuka satu box, refresh halaman untuk coba lagi.');
+                return;
+            }
+            if (!currentPrize) {
+                alert('Hadiah belum tersedia. Pastikan kode sudah valid.');
+                return;
+            }
+
+            boxOpened = true;
+
+            const boxes = document.querySelectorAll('.mysteryBox');
+            const clickedBox = boxes[index];
+
+            clickedBox.style.animation = 'spinBox 1s ease forwards';
+
+            clickedBox.addEventListener('animationend', function handler() {
+                clickedBox.removeEventListener('animationend', handler);
+
+                const prizeImageUrl = prizeImages[currentPrize] || '';
+                clickedBox.innerHTML = `<img src="${prizeImageUrl}" alt="Hadiah" />`;
+                clickedBox.style.cursor = 'default';
+
+                // Tampilkan gambar hadiah lain dengan opacity rendah pada box yang tidak dipilih
+                // Ini akan mengambil semua URL gambar hadiah, kecuali hadiah yang sebenarnya didapat
+                const otherPrizeUrls = Object.values(prizeImages).filter(url => url !== prizeImageUrl);
+                shuffleArray(otherPrizeUrls); // Acak untuk variasi visual
+
+                boxes.forEach((box, i) => {
+                    if (i !== index) {
+                        // Gunakan URL hadiah acak dari daftar 'otherPrizeUrls'
+                        const url = otherPrizeUrls[i % otherPrizeUrls.length];
+                        box.innerHTML = `<img src="${url}" alt="Hadiah" style="opacity:0.6;" />`;
+                        box.style.cursor = 'default';
+                        box.style.pointerEvents = 'none'; // Nonaktifkan klik pada box lain
+                    }
+                });
+
+                document.getElementById('result').textContent = `Selamat! Kamu mendapatkan hadiah Rp ${Number(currentPrize).toLocaleString('id-ID')}`;
+            });
+        }
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+        }
+    </script>
+</body>
+</html>
